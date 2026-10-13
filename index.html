@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CertHash</title>
+  <meta name="description" content="CertHash is a learning management system whose completion certificates stay verifiable on a public blockchain, even if the system that issued them is gone.">
+  <link rel="canonical" href="https://certhash.com/">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="CertHash">
+  <meta property="og:description" content="Completion certificates that stay verifiable after the system that issued them is gone.">
+  <meta property="og:url" content="https://certhash.com/">
+  <meta property="og:image" content="https://certhash.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#how">Skip to how it works</a>
+
+  <header class="masthead">
+    <a class="wordmark" href="/" aria-label="CertHash home">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="3" y="3" width="26" height="26" rx="5" fill="none" stroke="currentColor" stroke-width="2"/>
+        <path d="M10 16.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Cert<b>Hash</b></span>
+    </a>
+    <nav class="menu" aria-label="Site">
+      <a href="#how">How it works</a>
+      <a href="#verify">Verification</a>
+      <a href="#platform">Platform</a>
+      <a href="#faq">Questions</a>
+    </nav>
+    <a class="button primary small" href="mailto:brian@certhash.com?subject=CertHash%20early%20access">Request early access</a>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-copy">
+        <h1>Completion certificates that stay verifiable after the system that issued them is gone.</h1>
+        <p class="lede">CertHash is a learning management system that records a fingerprint of every certificate it issues on a public blockchain. Anyone can check a certificate against that record. No CertHash account, no API, no CertHash at all.</p>
+        <div class="actions">
+          <a class="button primary" href="mailto:brian@certhash.com?subject=CertHash%20early%20access">Request early access</a>
+          <a class="button" href="#demo">See what gets stamped</a>
+        </div>
+        <p class="fine">Stamping runs on <a href="https://recordstamp.com" rel="noopener">RecordStamp</a>, a free timestamping service on the Monad blockchain. Only the hash goes on chain. The certificate and the learner's name never do.</p>
+      </div>
+
+      <figure class="instrument" aria-label="A sample certificate with its hash and a verification result">
+        <div class="certificate" id="sample-cert">
+          <div class="cert-head">
+            <span class="cert-issuer">Certificate of completion</span>
+            <span class="cert-serial">No. CH-2026-00417</span>
+          </div>
+          <p class="cert-name">Jordan Avery Reyes</p>
+          <p class="cert-course">has completed <em>Hazard Communication for Supervisors</em>, 4.0 hours, with instructor review.</p>
+          <div class="cert-foot">
+            <span>Issued 13 Oct 2026</span>
+            <span>Instructor: M. Okafor</span>
+          </div>
+        </div>
+        <div class="readout">
+          <div class="readout-row">
+            <span class="k">SHA-256</span>
+            <code class="v hash" id="sample-hash" aria-live="polite">computing…</code>
+          </div>
+          <div class="fingerprint" id="sample-fp" aria-hidden="true"></div>
+          <div class="readout-row">
+            <span class="k">Record</span>
+            <span class="v ok"><i class="dot"></i>Found on Monad</span>
+          </div>
+          <div class="readout-row">
+            <span class="k">Stamped</span>
+            <span class="v mono">2026-10-13 16:42:07 UTC</span>
+          </div>
+          <div class="readout-row">
+            <span class="k">Registrant</span>
+            <span class="v mono">0x7c3e…9a1f, CertHash issuing wallet</span>
+          </div>
+          <figcaption>Sample data. The hash above is computed live from the sample certificate's text; the record fields show what a real lookup returns.</figcaption>
+        </div>
+      </figure>
+    </section>
+
+    <!-- Problem -->
+    <section class="section" id="why">
+      <div class="section-head">
+        <h2>A certificate is only as durable as the database behind it.</h2>
+      </div>
+      <div class="columns">
+        <div>
+          <h3>When the issuer goes away</h3>
+          <p>Training vendors shut down, platforms get migrated, and records get lost in the move. The PDF survives on someone's laptop, but there is no longer anyone to ask whether it is real.</p>
+        </div>
+        <div>
+          <h3>When the PDF is edited</h3>
+          <p>A completion certificate is a document anyone can open in an editor. A changed name, date or course title looks exactly like the original. Verifying today means emailing the issuer and waiting.</p>
+        </div>
+        <div>
+          <h3>When the verifier has no account</h3>
+          <p>Employers, auditors and licensing boards are not users of your LMS. A verification method that needs a login, a vendor portal or an API key is a method most of them will not use.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="section" id="how">
+      <div class="section-head">
+        <h2>How a CertHash certificate is issued and checked</h2>
+        <p>Four steps. The first two happen inside CertHash. The last two work without it.</p>
+      </div>
+      <ol class="steps">
+        <li>
+          <span class="n">1</span>
+          <div>
+            <h3>A learner completes a course</h3>
+            <p>Modules, SCORM packages, assessments and instructor review, the ordinary work of a learning management system. When the completion is approved, CertHash renders the certificate as a PDF.</p>
+          </div>
+        </li>
+        <li>
+          <span class="n">2</span>
+          <div>
+            <h3>The PDF is fingerprinted and stamped</h3>
+            <p>CertHash computes the SHA-256 hash of the finished file and submits it to the RecordStamp contract on Monad from its issuing wallet. The chain records the hash, the block time and the wallet that sent it. It never sees the file.</p>
+          </div>
+        </li>
+        <li>
+          <span class="n">3</span>
+          <div>
+            <h3>The learner keeps the PDF</h3>
+            <p>The certificate carries its own hash and the transaction reference in its footer. That is everything a verifier needs. Nothing about the learner is stored on chain, so the file is the only copy of their name.</p>
+          </div>
+        </li>
+        <li>
+          <span class="n">4</span>
+          <div>
+            <h3>Anyone verifies, anywhere, any time</h3>
+            <p>A verifier hashes the PDF they were given and looks the hash up on RecordStamp or directly on the chain. A match proves this exact file existed at the stamped time and was registered by CertHash. One altered byte and there is no match.</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- Demo -->
+    <section class="section" id="demo">
+      <div class="section-head">
+        <h2>See what gets stamped</h2>
+        <p>Hash any file or some text right here. It is computed in your browser with the Web Crypto API and nothing is uploaded. This is the same fingerprint CertHash records for a certificate.</p>
+      </div>
+      <div class="demo">
+        <div class="demo-input">
+          <label class="drop" id="drop" for="file">
+            <input type="file" id="file">
+            <span class="drop-title">Drop a file here or choose one</span>
+            <span class="drop-sub">Any type, any size. It stays on your device.</span>
+          </label>
+          <div class="or">or</div>
+          <label class="field">
+            <span>Type anything</span>
+            <textarea id="text" rows="3" placeholder="Hello, world"></textarea>
+          </label>
+        </div>
+        <div class="readout demo-readout">
+          <div class="readout-row">
+            <span class="k">Input</span>
+            <span class="v mono" id="demo-name">nothing yet</span>
+          </div>
+          <div class="readout-row">
+            <span class="k">SHA-256</span>
+            <code class="v hash" id="demo-hash" aria-live="polite">—</code>
+          </div>
+          <div class="fingerprint" id="demo-fp" aria-hidden="true"></div>
+          <p class="demo-note" id="demo-note">Change one character and watch every cell change. That is why a tampered certificate cannot match its record.</p>
+          <a class="button small" id="demo-link" href="https://recordstamp.com" rel="noopener">Look up a hash on RecordStamp</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Verification -->
+    <section class="section" id="verify">
+      <div class="section-head">
+        <h2>What a verifier actually gets</h2>
+        <p>The lookup returns four facts. Together they answer the question an employer or auditor is really asking: is this the document that was issued, and when?</p>
+      </div>
+      <dl class="facts">
+        <div>
+          <dt>Exists</dt>
+          <dd>Whether this exact hash has ever been stamped. A forged or edited PDF produces a different hash and returns nothing.</dd>
+        </div>
+        <div>
+          <dt>Timestamp</dt>
+          <dd>The block time when the stamp was recorded. The certificate cannot have been created after this moment.</dd>
+        </div>
+        <div>
+          <dt>Registrant</dt>
+          <dd>The wallet address that submitted the stamp. CertHash publishes its issuing addresses, so a verifier can confirm the stamp came from the issuer and not from the learner.</dd>
+        </div>
+        <div>
+          <dt>Metadata hash</dt>
+          <dd>An optional second fingerprint covering the completion record itself: course, hours, instructor approval. It lets an organization prove the details without publishing them.</dd>
+        </div>
+      </dl>
+      <div class="independence">
+        <h3>Built to outlive its issuer</h3>
+        <p>Monad is a public blockchain and the RecordStamp contract is open for anyone to query. If certhash.com went dark tomorrow, every stamp it ever made would still be there, still answerable by any wallet, explorer or script that can read the chain. That is the whole point.</p>
+      </div>
+    </section>
+
+    <!-- Platform -->
+    <section class="section" id="platform">
+      <div class="section-head">
+        <h2>The platform behind the certificate</h2>
+        <p>Stamping is the part that is new. The rest is a complete learning management system for organizations that have to prove training happened.</p>
+      </div>
+      <div class="features">
+        <div>
+          <h3>Courses and SCORM</h3>
+          <p>Author modules in the platform or import existing SCORM packages. Track attempts, scores and time on task per learner.</p>
+        </div>
+        <div>
+          <h3>Instructor review</h3>
+          <p>Completions can require an instructor's sign-off before a certificate is issued, with course-scoped rights so instructors manage their own rosters.</p>
+        </div>
+        <div>
+          <h3>External certificates</h3>
+          <p>Learners upload, or email in, certificates earned elsewhere. They are reviewed, filed against the person and tracked for expiry alongside internal completions.</p>
+        </div>
+        <div>
+          <h3>Compliance reporting</h3>
+          <p>Who is current, who is lapsing, who has never completed. Reports by person, course, department or deadline, exportable for audits.</p>
+        </div>
+        <div>
+          <h3>Roles and organizations</h3>
+          <p>Administrators, instructors, staff and learners, with permissions tied to courses and departments rather than a single global switch.</p>
+        </div>
+        <div>
+          <h3>Hardened by default</h3>
+          <p>Hosted on infrastructure we operate. Email from the platform ships with SPF, DKIM and DMARC enforcement from day one, so notifications are delivered and impersonation is rejected.</p>
+        </div>
+      </div>
+      <p class="status-line">CertHash is in development with a founding client. Early access is opening to a small number of organizations.</p>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="faq">
+      <div class="section-head">
+        <h2>Questions people ask first</h2>
+      </div>
+      <div class="faq">
+        <details open>
+          <summary>Is the certificate stored on the blockchain?</summary>
+          <p>No. Only a 32-byte hash of the PDF is recorded, along with the time and the issuing wallet. The hash cannot be reversed into the document, and it contains no name, course or date.</p>
+        </details>
+        <details>
+          <summary>What if the learner loses the PDF?</summary>
+          <p>CertHash keeps the issued file and can re-issue it while the platform is running. The reissued file is byte-identical, so it matches the original stamp. Learners are also encouraged to keep their own copy, because the file is what gets verified.</p>
+        </details>
+        <details>
+          <summary>Does a verifier need a crypto wallet?</summary>
+          <p>No. Reading the chain is free and needs no wallet. RecordStamp's verify page does it in a browser, and the contract can be queried by any public explorer or a few lines of code.</p>
+        </details>
+        <details>
+          <summary>What does stamping cost?</summary>
+          <p>RecordStamp charges nothing; the only cost is network gas on Monad, which CertHash pays as part of issuing. Learners and verifiers never pay anything.</p>
+        </details>
+        <details>
+          <summary>Can we stamp certificates we already issued elsewhere?</summary>
+          <p>Yes. Any file can be stamped, including certificates from a previous vendor or paper certificates that have been scanned. The stamp proves the file existed as of now; it does not backdate it.</p>
+        </details>
+        <details>
+          <summary>Who is behind CertHash?</summary>
+          <p>CertHash is built by Pueblo Internet Publishing LLC in Pueblo, Colorado. RecordStamp is a sister project from Blockchain Integration Strategies, the company's consulting practice.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="section contact" id="contact">
+      <h2>Talk to us about your training records</h2>
+      <p>If your organization issues certificates that other people need to trust, we would like to hear what you issue, who verifies it, and how that goes today.</p>
+      <a class="button primary" href="mailto:brian@certhash.com?subject=CertHash">Email brian@certhash.com</a>
+    </section>
+  </main>
+
+  <footer class="colophon">
+    <div>
+      <p>CertHash is a product of <a href="https://pueblointernetpublishing.com/" rel="noopener">Pueblo Internet Publishing LLC</a>, Pueblo, Colorado.</p>
+      <p>This site and its contents are &copy; <span id="year">2026</span> <a href="https://pueblointernetpublishing.com/" rel="noopener">Pueblo Internet Publishing LLC</a>. All rights reserved.</p>
+    </div>
+    <nav aria-label="Related">
+      <a href="https://recordstamp.com" rel="noopener">RecordStamp</a>
+      <a href="https://blockchainintegrationstrategies.com" rel="noopener">Blockchain Integration Strategies</a>
+      <a href="https://pueblointernetpublishing.com" rel="noopener">Pueblo Internet Publishing</a>
+    </nav>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
